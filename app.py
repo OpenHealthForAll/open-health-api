@@ -27,9 +27,17 @@ db.init_app(app)
 @require_oauth()
 def get_health_data_list():
     user = current_token.user
-    health_data_list = HealthData.query.filter_by(author_id=user.id).all()
+    health_data_list = HealthData.query.with_entities(
+        HealthData.id,
+        HealthData.data,
+        HealthData.created_at
+    ).filter_by(author_id=user.id).all()
     return {
-        'data': [health_data.to_dict() for health_data in health_data_list]
+        'data': [{
+            'id': health_data.id,
+            'data': health_data.data,
+            'created_at': health_data.created_at
+        } for health_data in health_data_list]
     }
 
 
