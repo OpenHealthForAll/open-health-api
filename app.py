@@ -24,21 +24,27 @@ db.init_app(app)
 
 
 @app.route('/health-data')
-@require_oauth()
 def get_health_data_list():
-    user = current_token.user
-    health_data_list = HealthData.query.with_entities(
-        HealthData.id,
-        HealthData.data,
-        HealthData.created_at
-    ).filter_by(author_id=user.id).all()
-    return {
-        'data': [{
-            'id': health_data.id,
-            'data': health_data.data,
-            'created_at': health_data.created_at
-        } for health_data in health_data_list]
-    }
+    try:
+        with require_oauth.acquire() as token:
+            user = token.user
+            health_data_list = HealthData.query.with_entities(
+                HealthData.id,
+                HealthData.data,
+                HealthData.created_at
+            ).filter_by(author_id=user.id).all()
+            return {
+                'data': [{
+                    'id': health_data.id,
+                    'data': health_data.data,
+                    'created_at': health_data.created_at
+                } for health_data in health_data_list]
+            }
+    except:
+        return {
+            "error": "invalid_token",
+            "error_description": "The access token provided is expired, revoked, malformed, or invalid for other reasons."
+        }, 401
 
 
 if __name__ == '__main__':
