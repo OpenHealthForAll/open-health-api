@@ -1,3 +1,4 @@
 .idea
 .env
 .vercel
+__pycache__
