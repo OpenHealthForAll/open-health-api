@@ -1,0 +1,285 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "OpenHealth",
+      "description": "Access to your health data.",
+      "version": "v1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://api.open-health.me"
+      }
+    ],
+    "paths": {
+      "/health-data": {
+        "get": {
+          "description": "Get your health records.",
+          "operationId": "GetMyHealthData",
+          "parameters": [],
+          "deprecated": false
+        }
+      },
+      "/workout-program": {
+        "get": {
+          "description": "Get your workout programs.",
+          "operationId": "GetMyWorkoutPrograms",
+          "parameters": [],
+          "deprecated": false,
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved workout programs.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WorkoutProgramList"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "description": "Save a new workout program.",
+          "operationId": "AddWorkoutProgram",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Day 1": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 2": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 3": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 4": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Exercise"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successfully saved the workout program.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WorkoutProgramResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/workout-program/{program_id}": {
+        "put": {
+          "description": "Update an existing workout program.",
+          "operationId": "UpdateWorkoutProgram",
+          "parameters": [
+            {
+              "name": "program_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID of the workout program to update"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Day 1": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 2": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 3": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    },
+                    "Day 4": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exercise"
+                      }
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Exercise"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successfully updated the workout program.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WorkoutProgramResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Workout program not found or you don't have permission to modify it.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "not_found"
+                      },
+                      "error_description": {
+                        "type": "string",
+                        "example": "Workout program not found or you don't have permission to modify it."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "WorkoutProgram": {
+          "type": "object",
+          "properties": {
+            "Day 1": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            },
+            "Day 2": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            },
+            "Day 3": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            },
+            "Day 4": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Exercise"
+              }
+            }
+          },
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Exercise"
+            }
+          },
+          "example": {
+            "Day 1": [
+              { "exercise": "Squat", "sets": 3, "reps": 5 },
+              { "exercise": "Bench Press", "sets": 4, "reps": 8 }
+            ],
+            "Day 2": [
+              { "exercise": "Overhead Press", "sets": 3, "reps": 5 },
+              { "exercise": "Deadlift", "sets": 4, "reps": 8 }
+            ]
+          }
+        },
+        "Exercise": {
+          "type": "object",
+          "required": ["exercise"],
+          "properties": {
+            "exercise": {
+              "type": "string",
+              "description": "Exercise name"
+            },
+            "sets": {
+              "type": ["integer", "null"],
+              "description": "Number of sets"
+            },
+            "reps": {
+              "type": ["integer", "null"],
+              "description": "Number of repetitions"
+            }
+          }
+        },
+        "WorkoutProgramResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "data": {
+              "$ref": "#/components/schemas/WorkoutProgram"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "WorkoutProgramList": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WorkoutProgramResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  } 
